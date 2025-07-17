@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "843312627387",
+    "project_id": "my-baber-booking-app",
+    "storage_bucket": "my-baber-booking-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843312627387:android:2068e677452be94cf3b39e",
+        "android_client_info": {
+          "package_name": "com.example.baber_booking_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWwIJT0MZ4UpmPc2p2bqRKLKGpxWvnzc4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
