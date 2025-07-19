@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, unnecessary_new
+
 import 'package:baber_booking_app/pages/home.dart';
 import 'package:baber_booking_app/pages/login.dart';
 import 'package:flutter/material.dart';
@@ -26,12 +28,13 @@ class _SignUpState extends State<SignUp> {
             .createUserWithEmailAndPassword(email: mail!, password: password!);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+              backgroundColor: Colors.green,
               content: Text(
-            "Registration Successful!",
-            style: TextStyle(
-              fontSize: 20,
-            ),
-          )),
+                "Registration Successful!",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              )),
         );
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Home()));
