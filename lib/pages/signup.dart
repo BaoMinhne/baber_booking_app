@@ -2,8 +2,11 @@
 
 import 'package:baber_booking_app/pages/home.dart';
 import 'package:baber_booking_app/pages/login.dart';
+import 'package:baber_booking_app/services/database.dart';
+import 'package:baber_booking_app/services/shared_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:random_string/random_string.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -26,6 +29,28 @@ class _SignUpState extends State<SignUp> {
       try {
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: mail!, password: password!);
+        print("✅ FirebaseAuth: Tạo user thành công");
+        String id = randomAlphaNumeric(10);
+        print("📦 ID tạo ra: $id");
+        print("📦 Lưu SharedPreferences...");
+        await SharedPreferenceHelper().saveUserId(id);
+        print("✔️ userId saved: $id");
+        await SharedPreferenceHelper().saveUserName(nameController.text);
+        print("✔️ userName saved: ${nameController.text}");
+        await SharedPreferenceHelper().saveUserEmail(emailController.text);
+        print("✔️ userEmail saved: ${emailController.text}");
+        await SharedPreferenceHelper().saveUserImage(
+            'https://cdn-icons-png.flaticon.com/512/149/149071.png');
+        print("✔️ userImage saved");
+
+        Map<String, dynamic> userInfoMap = {
+          "Name": nameController.text,
+          "Email": emailController.text,
+          "Id": id,
+          "Image": "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+        };
+        await DatabaseMethods().addUserDetails(userInfoMap, id);
+        print("📝 Đã lưu user lên Firestore với ID: $id");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               backgroundColor: Colors.green,
@@ -60,8 +85,10 @@ class _SignUpState extends State<SignUp> {
             )),
           );
         }
-      } catch (e) {
-        print(e);
+      } catch (e, stackTrace) {
+        print("❌ Lỗi không xác định trong registration()");
+        print("Exception: $e");
+        print("StackTrace: $stackTrace");
       }
     } else {
       print("Please fill all fields");

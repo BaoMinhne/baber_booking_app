@@ -1,4 +1,5 @@
 import 'package:baber_booking_app/pages/booking.dart';
+import 'package:baber_booking_app/services/shared_pref.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -9,6 +10,29 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String? name, image;
+
+  getthedatafromsharedpref() async {
+    name = await SharedPreferenceHelper().getUserName();
+    image = await SharedPreferenceHelper().getUserImage();
+
+    print("name: $name");
+    print("image: $image");
+
+    setState(() {});
+  }
+
+  getontheload() async {
+    await getthedatafromsharedpref();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getontheload();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +54,7 @@ class _HomeState extends State<Home> {
                           fontSize: 24,
                           fontWeight: FontWeight.w500,
                         )),
-                    const Text('Bảo Minh',
+                    Text(name!,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 24,
@@ -40,7 +64,7 @@ class _HomeState extends State<Home> {
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(30),
-                  child: Image.asset('assets/images/avatar.png',
+                  child: Image.network(image!,
                       width: 60, height: 60, fit: BoxFit.cover),
                 ),
               ],
