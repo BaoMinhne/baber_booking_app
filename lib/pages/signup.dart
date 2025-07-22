@@ -29,12 +29,10 @@ class _SignUpState extends State<SignUp> {
       try {
         UserCredential userCredential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(email: mail!, password: password!);
-        print("✅ FirebaseAuth: Tạo user thành công");
-        String id = randomAlphaNumeric(10);
-        print("📦 ID tạo ra: $id");
-        print("📦 Lưu SharedPreferences...");
-        await SharedPreferenceHelper().saveUserId(id);
-        print("✔️ userId saved: $id");
+        String uid = userCredential.user!.uid;
+
+        await SharedPreferenceHelper().saveUserId(uid);
+        print("✔️ userId saved: $uid");
         await SharedPreferenceHelper().saveUserName(nameController.text);
         print("✔️ userName saved: ${nameController.text}");
         await SharedPreferenceHelper().saveUserEmail(emailController.text);
@@ -46,11 +44,11 @@ class _SignUpState extends State<SignUp> {
         Map<String, dynamic> userInfoMap = {
           "Name": nameController.text,
           "Email": emailController.text,
-          "Id": id,
+          "Id": uid,
           "Image": "https://cdn-icons-png.flaticon.com/512/149/149071.png"
         };
-        await DatabaseMethods().addUserDetails(userInfoMap, id);
-        print("📝 Đã lưu user lên Firestore với ID: $id");
+        await DatabaseMethods().addUserDetails(userInfoMap, uid);
+        print("📝 Đã lưu user lên Firestore với ID: $uid");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               backgroundColor: Colors.green,

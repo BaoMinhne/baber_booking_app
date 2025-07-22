@@ -66,7 +66,7 @@ class _BookingState extends State<Booking> {
     return Scaffold(
       backgroundColor: Color(0xFF2b1615),
       body: Container(
-        margin: EdgeInsets.only(left: 10),
+        margin: EdgeInsets.only(left: 10, right: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -91,7 +91,6 @@ class _BookingState extends State<Booking> {
             // ignore: sized_box_for_whitespace
             Container(
               width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(right: 10),
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
@@ -213,7 +212,7 @@ class _BookingState extends State<Booking> {
               },
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 decoration: BoxDecoration(
                   color: Color(0xFFfe8f33),
                   borderRadius: BorderRadius.circular(30),

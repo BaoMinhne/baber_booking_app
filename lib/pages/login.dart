@@ -1,7 +1,10 @@
 // ignore_for_file: use_build_context_synchronously, unnecessary_new, avoid_unnecessary_containers
 
+import 'package:baber_booking_app/admin/admin_login.dart';
 import 'package:baber_booking_app/pages/home.dart';
 import 'package:baber_booking_app/pages/signup.dart';
+import 'package:baber_booking_app/services/database.dart';
+import 'package:baber_booking_app/services/shared_pref.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -23,21 +26,50 @@ class _LogInState extends State<LogIn> {
   userLogin() async {
     if (mail != null && password != null) {
       try {
-        await FirebaseAuth.instance
+        UserCredential userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: mail!, password: password!);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home()));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.green,
-            content: Text(
-              "Login Successful!",
-              style: TextStyle(
-                fontSize: 20,
+
+        String uid = userCredential.user!.uid;
+        print("Id: ${uid}");
+
+        var userDoc = await DatabaseMethods().getUserDetails(uid);
+
+        if (userDoc != null) {
+          // 3. Lưu vào SharedPreferences
+          await SharedPreferenceHelper().saveUserName(userDoc["Name"]);
+          await SharedPreferenceHelper().saveUserEmail(userDoc["Email"]);
+          await SharedPreferenceHelper().saveUserImage(userDoc["Image"]);
+          await SharedPreferenceHelper().saveUserId(uid);
+
+          // 4. Chuyển sang Home
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Home()),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.green,
+              content: Text(
+                "Login Successful!",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
             ),
-          ),
-        );
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                backgroundColor: Colors.red,
+                content: Text(
+                  "No user detail for that email.",
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                )),
+          );
+        }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -207,6 +239,38 @@ class _LogInState extends State<LogIn> {
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                               )),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AdminLogin()));
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.admin_panel_settings_outlined,
+                              color: Color.fromARGB(234, 189, 19, 64),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text("Go to Admin Panel",
+                                style: TextStyle(
+                                  color: Color.fromARGB(234, 189, 19, 64),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                )),
+                          ],
                         ),
                       ),
                     ),

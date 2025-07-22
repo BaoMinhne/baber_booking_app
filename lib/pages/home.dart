@@ -1,4 +1,6 @@
 import 'package:baber_booking_app/pages/booking.dart';
+import 'package:baber_booking_app/pages/user.dart';
+import 'package:baber_booking_app/services/database.dart';
 import 'package:baber_booking_app/services/shared_pref.dart';
 import 'package:flutter/material.dart';
 
@@ -29,8 +31,8 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    getontheload();
     super.initState();
+    getontheload();
   }
 
   @override
@@ -62,10 +64,50 @@ class _HomeState extends State<Home> {
                         )),
                   ],
                 ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: Image.network(image!,
-                      width: 60, height: 60, fit: BoxFit.cover),
+
+                // --- Dropdown (popup) menu ---
+                PopupMenuButton<String>(
+                  onSelected: (value) async {
+                    if (value == 'info') {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => UserPage()));
+                    } else if (value == 'logout') {
+                      await DatabaseMethods().signOutUser(context);
+                    }
+                  },
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'info',
+                      child: Text('Personal Information',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          )),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'logout',
+                      child: Text('Logout',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          )),
+                    ),
+                  ],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  offset: Offset(0, 50),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: Image.network(
+                      image!,
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ],
             ),
